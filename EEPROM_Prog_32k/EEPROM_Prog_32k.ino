@@ -19,6 +19,7 @@ Write Sequence:
 
 #define ADDR_SIZE 15
 #define DATA_SIZE 8
+#define MAX_ADDR 8 //for now
 #define WE 2
 #define OE 3
 
@@ -55,7 +56,7 @@ byte read_address(unsigned int address) {
   return data;
 }
 
-byte write_address(unsigned int address, byte data) {
+void write_address(unsigned int address, byte data) {
   set_address(address);
   digitalWrite(OE, HIGH); //disable output
 
@@ -65,19 +66,35 @@ byte write_address(unsigned int address, byte data) {
 
   byte orig_data = data;
 
-  for (int i = 0; i < DATA_SIZE; o++) {
+  for (int i = 0; i < DATA_SIZE; i++) {
     digitalWrite(DATA_PINS[i], data & 1);
     data = data >> 1; //Shift data right 1 to read each digit
   }
-  
+
   digitalWrite(WE, LOW); //enable writing
   delayMicroseconds(1);
-  digitalWrite(WRITE_ENABLE, HIGH); //disable writing
+  digitalWrite(WE, HIGH); //disable writing
   delay(1);
 
-  while (read_address(address) != origdata) {
+  while (read_address(address) != orig_data) {
     delay(1);
   }
+}
+
+byte read_byte_from_serial() {
+  String s_buf = "";
+  while (true) {
+    if (Serial.available()) {
+      char c = Serial.read();
+      if (c == '\n') {
+        break;
+      }
+      else {
+        s_buf += c;
+      }
+    }
+  }
+  return s_buf.toInt();
 }
 
 
@@ -94,6 +111,26 @@ void setup() {
   digitalWrite(WE, HIGH); //disable writing
 
   Serial.println("IO Configured.");
+
+  Serial.println("Ready for writing data...");
+  for (unsigned int addr = 0; addr < MAX_ADDR; addr++) {
+    write_address(addr, read_byte_from_serial());
+    Serial.println("OK");
+  }
+
+  Serial.println("Write Completed!");
+
+  for (unsigned int addr = 0; addr < MAX_ADDR; addr++) {
+    if (read_address(addr) != read_byte_from_serial()) {
+      Serial.println("VERIFICATION ERROR");
+      break;
+    }
+    else {
+      Serial.println("OK");
+    }
+  }
+
+  Serial.println("Verification Completed!");
 }
 
 void loop() {
