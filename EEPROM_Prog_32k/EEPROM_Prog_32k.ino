@@ -19,9 +19,10 @@ Write Sequence:
 
 #define ADDR_SIZE 15
 #define DATA_SIZE 8
-#define MAX_ADDR 8 //for now
+#define MAX_ADDR 0x8000
 #define WE 2
 #define OE 3
+#define LIGHT 13
 
 //A0 through A15
 int ADDR_PINS [ADDR_SIZE] = {37, 35, 33, 31, 29, 27, 25, 23,
@@ -57,8 +58,10 @@ byte read_address(unsigned int address) {
 }
 
 void write_address(unsigned int address, byte data) {
-  set_address(address);
-  digitalWrite(OE, HIGH); //disable output
+  if (read_address(address) == data) {
+    return; //improves prog speed
+  }
+  digitalWrite(OE, HIGH); //disable output (no need to set addr again...)
 
   for (int i = 0; i < DATA_SIZE; i++) {
     pinMode(DATA_PINS[i], OUTPUT);
@@ -74,11 +77,13 @@ void write_address(unsigned int address, byte data) {
   digitalWrite(WE, LOW); //enable writing
   delayMicroseconds(1);
   digitalWrite(WE, HIGH); //disable writing
+  digitalWrite(LIGHT, HIGH);
   delay(1);
 
   while (read_address(address) != orig_data) {
     delay(1);
   }
+  digitalWrite(LIGHT, LOW);
 }
 
 byte read_byte_from_serial() {
@@ -108,7 +113,9 @@ void setup() {
   }
   pinMode(WE, OUTPUT);
   pinMode(OE, OUTPUT);
+  pinMode(LIGHT, OUTPUT);
   digitalWrite(WE, HIGH); //disable writing
+  digitalWrite(LIGHT, LOW);
 
   Serial.println("IO Configured.");
 
@@ -121,8 +128,12 @@ void setup() {
   Serial.println("Write Completed!");
 
   for (unsigned int addr = 0; addr < MAX_ADDR; addr++) {
-    if (read_address(addr) != read_byte_from_serial()) {
-      Serial.println("VERIFICATION ERROR");
+    byte r = read_byte_from_serial();
+    byte e = read_address(addr);
+    if (e != r) {
+      char o_buf [256];
+      sprintf(o_buf, "VERIFICATION ERROR on addr %04x: EEPROM: %02x, FILE: %02x", addr, e, r);
+      Serial.println(o_buf);
       break;
     }
     else {

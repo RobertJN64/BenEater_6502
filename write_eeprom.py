@@ -23,16 +23,26 @@ def main():
     with open("rom.bin", "rb") as f:
         barr = f.read()
 
-    for char in barr:
-        prog.write(str(char) + "\n")
+    last_p = 0
+    for index, char in enumerate(barr):
+        if int(index * 100/len(barr)) > last_p:
+            last_p = int(index * 100/len(barr))
+            print(f"Writing... {last_p}% Complete")
+
+        prog.write((str(char) + "\n").encode())
         if not verify_line(prog, "OK", "writing", False):
             return
 
     if not verify_line(prog, "Write Completed!", "writing", True):
         return
 
-    for char in barr:
-        prog.write(str(char) + "\n")
+    last_p = 0
+    for index, char in enumerate(barr):
+        if int(index * 100 / len(barr)) > last_p:
+            last_p = int(index * 100/ len(barr))
+            print(f"Verifying... {last_p}% Complete")
+
+        prog.write((str(char) + "\n").encode())
         if not verify_line(prog, "OK", "verifying", False):
             return
 
