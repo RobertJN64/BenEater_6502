@@ -5,9 +5,12 @@ def main():
     
     # Calc indent
     m = 0
-    for l in lines:
-      if ';' in l:
-        m = max(m, l.index(';'))
+    for index, line in enumerate(lines):
+      while '  ;' in line:
+        line = line.replace('  ;', ' ;')
+      if ';' in line:
+        m = max(m, line.index(';'))
+      lines[index] = line
 
     for index, line in enumerate(lines):
       if ';' in line:

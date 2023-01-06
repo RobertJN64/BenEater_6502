@@ -64,7 +64,7 @@ ignore_result:
   dex
   bne rol_loop          ; Repeat 16 times max
 
-                        ; Loop done, time to output values
+ ; Loop done, time to output values
   rol value             ; Shift last bit into value (value[8-15] <- value [0-7] <- carry)
   rol value + 1
   clc
