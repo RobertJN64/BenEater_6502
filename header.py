@@ -9,14 +9,22 @@ def main():
   while '' in lines:
     lines.remove('')
 
-  header = 'include("' + fname + '")\n ; START HEADER\n'
+  sects = ''
+  variables = ''
+  
   for line in lines:
-    if ':' in lines:
-      header += line.replace(':', '') + ', '
+    if ':' in line:
+      sects += line.replace(':', '') + ', '
     if ' = ' in line:
-      header += line.split('=')[0].strip() + ', '
-  header = header[:-2] #remove trailing ', '
-  header += "\n ; END HEADER\n"
+      variables += line.split('=')[0].strip() + ', '
+      
+  header = 'include("' + fname + '")\n ; START HEADER\n'
+  if len(sects) > 0:
+    header += sects[:-2] + '\n' #remove trailing ', '
+  if len(variables) > 0:
+    header += variables[:-2] + '\n' #remove trailing ', '
+
+  header += " ; END HEADER\n"
   
   with open("VASM/MacroASM/Util/" + fname + ".header", 'w+') as f:
     f.write(header)

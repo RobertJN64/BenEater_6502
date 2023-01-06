@@ -1,10 +1,9 @@
+.org $8000
+
 include("lcd")
  ; START HEADER
 LCD_CONTROL, LCD_DATA, DDR_LCD_CONTROL, DDR_LCD_DATA, RS, RW, E, BF
  ; END HEADER
-
-
-  .org $8000
 
 reset:
   lda #%11111111        ; Set LCD data pins as output
@@ -39,5 +38,5 @@ loop:
 message: .asciiz "Hello, world!"
 
   .org $fffc
-  .word reset           ; 8000
+  .word reset
   .word $0000
