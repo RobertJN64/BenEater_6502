@@ -1,4 +1,4 @@
-.org $8000
+  .org $8000
 
 include("lcd")
  ; START HEADER

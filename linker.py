@@ -1,3 +1,6 @@
+import shutil
+import os
+
 # Features
 # malloc(x) cmd for allocating x bytes
 # include(x) cmd for including files
@@ -46,5 +49,9 @@ def main():
   with open("VASM/out.65c02.s", 'w+') as f:
     for line in parse_file(lines):
       f.write(line + '\n')
-      
+
+  # http://www.compilers.de/vasm.html
+  os.system(f'cd VASM && vasm6502_oldstyle.exe "out.65c02.s" -Fbin -dotdir -o bin/out.bin')
+  shutil.move("VASM/bin/out.bin", "rom.bin")
+
 main()
