@@ -43,8 +43,8 @@ reset:
   sta value + 1
 
 div_start:
-  pha #0                ; Push null byte onto stack
   lda #0                ; Init mod10 to 0
+  pha                   ; Push null byte onto stack
   sta mod10
 
   ldx #16               ; Repeat 16 times max
