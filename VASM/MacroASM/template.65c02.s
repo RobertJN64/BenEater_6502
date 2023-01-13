@@ -6,11 +6,14 @@ lcd_command, lcd_char, lcd_wait, lcd_busy
 LCD_CONTROL, LCD_DATA, DDR_LCD_CONTROL, DDR_LCD_DATA, RS, RW, E, BF
  ; END HEADER
 
-
 var = malloc(2)    ; 2 bytes | Some variable
 
 reset:
-  lda #%11111111   ; Load ff into A reg
+  jsr lcd_init
+
+  lda #"H"
+  jsr lcd_char
+  
 loop:
   jmp loop
 

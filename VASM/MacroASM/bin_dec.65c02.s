@@ -2,7 +2,7 @@
 
 include("lcd")
  ; START HEADER
-lcd_command, lcd_char, lcd_wait, lcd_busy
+lcd_command, lcd_char, lcd_wait, lcd_init
 LCD_CONTROL, LCD_DATA, DDR_LCD_CONTROL, DDR_LCD_DATA, RS, RW, E, BF
  ; END HEADER
 
@@ -11,23 +11,7 @@ value = malloc(2)           ; 2 bytes | Initial value for bin to dec conversion
 mod10 = malloc(1)           ; 1 byte  | Mod10 result from binary division
 
 reset:
-  lda #%11111111        ; Set LCD data pins as output
-  sta DDR_LCD_DATA
-
-  lda #(RS | RW | E)    ; Set LCD control pins as output
-  sta DDR_LCD_CONTROL
-
-  lda #%00111000        ; Set 8-bit mode; 2-line display; 5x8 font
-  jsr lcd_command
-
-  lda #%00001110        ; Display on; cursor on; blink off
-  jsr lcd_command
-
-  lda #%00000110        ; Increment and shift cursor; don't shift display
-  jsr lcd_command
-
-  lda #%00000001        ; Clear display
-  jsr lcd_command
+  jsr lcd_init
 
   lda number            ; Init value to number
   sta value

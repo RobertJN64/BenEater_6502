@@ -13,9 +13,9 @@ def main():
     variables = ''
 
     for line in lines:
-        if ':' in line:
+        if ':' in line and line.strip()[0] != '_':
             sects += line.replace(':', '') + ', '
-        if ' = ' in line:
+        if ' = ' in line and line.strip()[0] != '_':
             variables += line.split('=')[0].strip() + ', '
 
     header = 'include("' + fname + '")\n ; START HEADER\n'

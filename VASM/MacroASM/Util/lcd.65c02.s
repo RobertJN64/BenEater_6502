@@ -40,7 +40,7 @@ lcd_wait:               ; Read busy flag and block until LCD ready
   lda #%00000000        ; Set LCD_DATA as input
   sta DDR_LCD_DATA 
 
-lcd_busy:
+_lcd_busy:
   lda #RW               ; Enable reading from LCD
   sta LCD_CONTROL
   lda #(RW | E)         ; Set E bit to send instruction
@@ -48,7 +48,7 @@ lcd_busy:
 
   lda LCD_DATA          ; Read from LCD
   and #BF               ; AND busy flag - sets Zero flag if not busy
-  bne lcd_busy          ; Jump back to start of loop if busy
+  bne _lcd_busy         ; Jump back to start of loop if busy
    
 
   lda #0                ; Clear RS/RW/E bits
@@ -57,4 +57,24 @@ lcd_busy:
   lda #%11111111        ; Set LCD data pins as output
   sta DDR_LCD_DATA
   pla                   ; Restore A register
+  rts
+
+lcd_init:
+  lda #%11111111        ; Set LCD data pins as output
+  sta DDR_LCD_DATA
+
+  lda #(RS | RW | E)    ; Set LCD control pins as output
+  sta DDR_LCD_CONTROL
+
+  lda #%00111000        ; Set 8-bit mode; 2-line display; 5x8 font
+  jsr lcd_command
+
+  lda #%00001110        ; Display on; cursor on; blink off
+  jsr lcd_command
+
+  lda #%00000110        ; Increment and shift cursor; don't shift display
+  jsr lcd_command
+
+  lda #%00000001        ; Clear display
+  jsr lcd_command
   rts
