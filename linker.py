@@ -33,8 +33,10 @@ def parse_file(lines):
                 with open("VASM/MacroASM/Util/" + fname + ".65c02.s") as h:
                     l2 = parse_file([line.replace("\n", "")
                                     for line in h.readlines()])
+                out.append("\n ; LINKED FILE: " + fname)
                 for line in l2:
                     out.append(line)
+                out.append(" ; END LINKED FILE: " + fname + "\n")
 
             elif '; START HEADER' in line:
                 header_flag = True
@@ -53,6 +55,7 @@ def main():
         lines = [line.replace("\n", "") for line in f.readlines()]
 
     with open("VASM/out.65c02.s", 'w+') as f:
+        f.write(' ; Finished linking file: ' + fname + '\n\n')
         for line in parse_file(lines):
             f.write(line + '\n')
 
