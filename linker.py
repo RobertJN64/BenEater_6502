@@ -8,10 +8,11 @@ import os
 # activate assembler when finished
 
 malloc = int("0x200", 16)
+link_list = []
 
 
 def parse_file(lines):
-    global malloc
+    global malloc, link_list
     header_flag = False
     out = []
     for line in lines:
@@ -26,6 +27,9 @@ def parse_file(lines):
 
             elif 'include(' in line:
                 fname = line.split('"')[1]
+                if fname in link_list:
+                    continue
+                link_list.append(fname)
                 with open("VASM/MacroASM/Util/" + fname + ".65c02.s") as h:
                     l2 = parse_file([line.replace("\n", "")
                                     for line in h.readlines()])

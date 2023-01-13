@@ -1,6 +1,11 @@
 def main():
     fname = input("Enter filename: ")
-    with open("VASM/Assembly Programs/" + fname + ".65c02.s") as f:
+    if input("MacroASM? ") == 'y':
+        fpath = "VASM/MacroASM/"
+    else:
+        fpath = "VASM/Assembly Programs/"
+
+    with open(fpath + fname + ".65c02.s") as f:
         lines = [line.replace("\n", "") for line in f.readlines()]
 
     # Calc indent
@@ -24,7 +29,7 @@ def main():
                 i = line.index(';')
             lines[index] = line
 
-    with open("VASM/Assembly Programs/" + fname + ".65c02.s", "w+") as f:
+    with open(fpath + fname + ".65c02.s", "w+") as f:
         for line in lines:
             f.write(line + '\n')
 
