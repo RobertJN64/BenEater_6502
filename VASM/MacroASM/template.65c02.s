@@ -20,5 +20,5 @@ loop:
 number: .word 1729 ; Binary number
 
   .org $fffc
-  .word reset      ; 8000
+  .word reset
   .word $0000

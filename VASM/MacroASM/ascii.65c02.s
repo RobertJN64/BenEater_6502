@@ -21,7 +21,7 @@ print:
 loop:
   jmp loop
 
-message: .asciiz "Hello, world!"
+message: .asciiz "linker.py works"
 
   .org $fffc
   .word reset
