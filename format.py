@@ -1,9 +1,8 @@
 def main():
     fname = input("Enter filename: ")
-    if input("MacroASM? ") == 'y':
-        fpath = "VASM/MacroASM/"
-    else:
-        fpath = "VASM/Assembly Programs/"
+    d = {"M": "VASM/MacroASM/", "U": "VASM/MacroASM/Util/",
+         "A": "VASM/Assembly Programs/"}
+    fpath = d[input("[M]acroASM / [U]til / [A]ssembly Programs ")]
 
     with open(fpath + fname + ".65c02.s") as f:
         lines = [line.replace("\n", "") for line in f.readlines()]
