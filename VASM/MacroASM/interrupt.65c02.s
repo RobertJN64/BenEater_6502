@@ -21,14 +21,12 @@ reset:
   sta counter
   sta counter + 1
 
-  
-
 print_loop:
   sei               ; Disable interrupts
   lda counter
   sta print_value
   lda counter + 1
-  sta print_value
+  sta print_value + 1
   cli               ; Enable interrupts
   jsr print_number
 

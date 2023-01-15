@@ -48,8 +48,9 @@ _ignore_result:
 
 _write_loop:            ; Write each char from stack onto LCD
   pla
-  beq loop
+  beq _finished_writing
   jsr lcd_char
   jmp _write_loop
 
+_finished_writing:
   rts
